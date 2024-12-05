@@ -10,24 +10,37 @@ public class Main {
         Scanner input = new Scanner(System.in);
         System.out.println("Enter the number of missionaries and cannibals:");
         N = input.nextInt();
+        while (N < 1) {
+            System.out.println("Please enter a valid number of missionaries and cannibals:");
+            N = input.nextInt();
+        }
         System.out.println("Enter the boat capacity:");
         M = input.nextInt();
+        while (M < 1) {
+            System.out.println("Please enter a valid boat capacity:");
+            M = input.nextInt();
+        }
         System.out.println("Enter the maximum allowed crossings:");
         K = input.nextInt();
+        while (K < 1) {
+            System.out.println("Please enter a valid number of maximum allowed crossings:");
+            K = input.nextInt();
+        }
         input.close();
+
 
         AStarSolver solver = new AStarSolver(N, N, M, K);
         long startTimer = System.currentTimeMillis();
-        List<State> solution = solver.solve();
+        List<State> terminalState = solver.solve();
         long endTimer = System.currentTimeMillis();
 
-        if (solution != null) {
+        if (terminalState == null) {
+            System.out.println("No terminalState found with the given variables.");
+        } else {
             System.out.println("Solution found:");
-            for (State state : solution) {
+            for (State state : terminalState) {
                 System.out.println(state);
             }
-        } else {
-            System.out.println("No solution found with the given variables.");
         }
 
         System.out.println("Time: " + (double)(endTimer - startTimer) / 1000 + " sec.");

@@ -16,14 +16,8 @@ public class State {
     }
 
     public boolean isValid() {
-        if (missionariesLeft < 0 || cannibalsLeft < 0 || missionariesRight < 0 || cannibalsRight < 0) {
-            return false;
-        }
-        if ((missionariesLeft > 0 && missionariesLeft < cannibalsLeft) ||
-                (missionariesRight > 0 && missionariesRight < cannibalsRight)) {
-            return false;
-        }
-        return true;
+        return (missionariesLeft == 0 || missionariesLeft >= cannibalsLeft) &&
+                (missionariesRight == 0 || missionariesRight >= cannibalsRight);
     }
 
     public boolean isGoalState(int totalMissionaries, int totalCannibals) {
@@ -43,14 +37,14 @@ public class State {
                 boatOnLeft == state.boatOnLeft;
     }
 
-    /*@Override
-    public int hashCode() {
-        return Objects.hash(missionariesLeft, cannibalsLeft, missionariesRight, cannibalsRight, boatOnLeft);
-    }*/
-
     @Override
     public String toString() {
         return String.format("Left: (%dM, %dC), Right: (%dM, %dC), Boat on left: %b",
                 missionariesLeft, cannibalsLeft, missionariesRight, cannibalsRight, boatOnLeft);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(missionariesLeft, cannibalsLeft, missionariesRight, cannibalsRight, boatOnLeft);
     }
 }

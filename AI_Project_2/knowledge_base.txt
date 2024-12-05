@@ -1,8 +1,0 @@
-P
-P -> Q
-Q, R -> S
-T -> Q
-T
-R -> U
-S -> V
-U -> W

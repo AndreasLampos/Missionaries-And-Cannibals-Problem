@@ -27,18 +27,23 @@ public class AStarSolver {
         }
     }
 
-    public static class Heuristic {
-        public static int calculate(State state) {
-            return state.missionariesLeft + state.cannibalsLeft;
+
+    public int heuristic(State state) {
+        int sum = state.missionariesLeft + state.cannibalsLeft;
+        int heuristic = (sum % (maxCrossings - 1) > 1) ? 1 : -1;
+        if (!state.boatOnLeft) {
+            heuristic++;
         }
+        return heuristic;
     }
+
 
     public List<State> solve() {
         PriorityQueue<Node> openSet = new PriorityQueue<>(Comparator.comparingInt(node -> node.cost + node.heuristic));//compare the sum of cost and heuristic value of all the nodes
-        List<State> closedSet = new ArrayList<State>() ;//to keep track of the visited nodes
+        HashSet<State> closedSet = new HashSet<>() ;//to keep track of the visited nodes
 
         State initialState = new State(totalMissionaries, totalCannibals, 0, 0, true);
-        Node initialNode = new Node(initialState, null, 0, Heuristic.calculate(initialState));
+        Node initialNode = new Node(initialState, null, 0, heuristic(initialState));
 
         openSet.add(initialNode);
 
@@ -57,13 +62,13 @@ public class AStarSolver {
 
             closedSet.add(currentNode.state);//mark the node as visited
 
-            for (State neighbor : generateSuccessors(currentNode.state)) {
+            for (State neighbor : getChildren(currentNode.state)) {
                 if (closedSet.contains(neighbor)) continue; //skip the visited nodes
 
                 int newCost = currentNode.cost + 1; //increment the cost by 1
 
                 if (newCost <= maxCrossings) {
-                    int heuristic = Heuristic.calculate(neighbor); //calculate the heuristic value of the neighbor
+                    int heuristic = heuristic(neighbor); //calculate the heuristic value of the neighbor
                     openSet.add(new Node(neighbor, currentNode, newCost, heuristic)); //add the neighbor to the open set
                 }
             }
@@ -72,8 +77,8 @@ public class AStarSolver {
         return null; // No solution found within the given constraints.
     }
 
-    private List<State> generateSuccessors(State state) {
-        List<State> successors = new ArrayList<>();
+    private List<State> getChildren(State state) {
+        List<State> children = new ArrayList<>();
         int direction = state.boatOnLeft ? -1 : 1;
 
         for (int missionaries = 0; missionaries <= boatCapacity; missionaries++) {
@@ -89,14 +94,12 @@ public class AStarSolver {
 
                 State newState = new State(newMissionariesLeft, newCannibalsLeft, newMissionariesRight, newCannibalsRight, !state.boatOnLeft); //create a new state
 
-                if (newState.isValid()) {
-                    successors.add(newState);
-                    //add the new state to the list of successors if it is valid
+                if (newState.isValid()){
+                    children.add(newState);//add the new state to the list of children if it is valid
                 }
             }
         }
-
-        return successors;
+        return children;
     }
 
     private List<State> buildPath(Node node) {

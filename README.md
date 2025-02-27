@@ -64,5 +64,5 @@ This project implements the classic **Missionaries and Cannibals** problem using
 <br/>
 
 
-## For more details, please refer to the accompanying report PDF.
+## For more details, please refer to the accompanying ![report PDF](Missionaries_And_Cannibals_Report.pdf)
 
